@@ -12,37 +12,37 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Department (
-    DepartmentID   INT IDENTITY(1,1) PRIMARY KEY,
+    DepartmentID INT IDENTITY(1,1) PRIMARY KEY,
     DepartmentName NVARCHAR(100) NOT NULL,
-    Description    NVARCHAR(250) NULL,
-    IsActive       BIT NOT NULL DEFAULT 1,
-    Created        DATETIME NOT NULL DEFAULT GETDATE(),
-    Modified       DATETIME NOT NULL,
-    UserID         INT NOT NULL,
+    Description NVARCHAR(250) NULL,
+    IsActive BIT NOT NULL DEFAULT 1,
+    Created DATETIME NOT NULL DEFAULT GETDATE(),
+    Modified DATETIME NOT NULL,
+    UserID INT NOT NULL,
     CONSTRAINT FK_User FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
 CREATE TABLE Doctor (
-    DoctorID        INT IDENTITY(1,1) PRIMARY KEY,
-    DoctorName            NVARCHAR(100) NOT NULL,
-    Phone           NVARCHAR(20) NOT NULL,
-    Email           NVARCHAR(100) NOT NULL,
-    Qualification   NVARCHAR(100) NOT NULL,
-    Specialization  NVARCHAR(100) NOT NULL,
-    IsActive        BIT NOT NULL DEFAULT 1,
-    Created         DATETIME NOT NULL DEFAULT GETDATE(),
-    Modified        DATETIME NOT NULL,
-    UserID          INT NOT NULL,
+    DoctorID INT IDENTITY(1,1) PRIMARY KEY,
+    DoctorName NVARCHAR(100) NOT NULL,
+    Phone NVARCHAR(20) NOT NULL,
+    Email NVARCHAR(100) NOT NULL,
+    Qualification NVARCHAR(100) NOT NULL,
+    Specialization NVARCHAR(100) NOT NULL,
+    IsActive BIT NOT NULL DEFAULT 1,
+    Created DATETIME NOT NULL DEFAULT GETDATE(),
+    Modified DATETIME NOT NULL,
+    UserID INT NOT NULL,
     CONSTRAINT FK_Doctor_User FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
 CREATE TABLE DoctorDepartment (
     DoctorDepartmentID INT IDENTITY(1,1) PRIMARY KEY,
-    DoctorID           INT NOT NULL,
-    DepartmentID       INT NOT NULL,
-    Created            DATETIME NOT NULL DEFAULT GETDATE(),
-    Modified           DATETIME NOT NULL,
-    UserID             INT NOT NULL,
+    DoctorID INT NOT NULL,
+    DepartmentID INT NOT NULL,
+    Created DATETIME NOT NULL DEFAULT GETDATE(),
+    Modified DATETIME NOT NULL,
+    UserID INT NOT NULL,
     CONSTRAINT FK_DoctorDepartment_Doctor FOREIGN KEY (DoctorID) REFERENCES Doctor(DoctorID),
     CONSTRAINT FK_DoctorDepartment_Department FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID),
     CONSTRAINT FK_DoctorDepartment_User FOREIGN KEY (UserID) REFERENCES Users(UserID)
