@@ -23,8 +23,10 @@ END
 
 
 
--- Example call:
+
 --PR_PAT_Patient_Insert 'Asha','2000-01-01','Female','asha@gmail.com','9876543210','Street 123','Surat','Gujarat',1,'2024-01-01','2024-06-01',1
+--PR_PAT_Patient_Insert 'Reva Joshi', '2000-05-01', 'Female', 'reva@example.com', '9990008888', 'Green St, 12', 'Ahmedabad', 'Gujarat', 1, '2024-01-01','2024-06-01' , 1
+--PR_PAT_Patient_Insert 'Karan Mehta', '1995-10-20', 'Male', 'karan@example.com', '7778889990', 'Blue Hill Road', 'Rajkot', 'Gujarat', 1, '2024-01-01','2024-06-01', 2
 CREATE OR ALTER PROC PR_PAT_Patient_Insert
     @Name           NVARCHAR(100),
     @DateOfBirth    DATETIME,

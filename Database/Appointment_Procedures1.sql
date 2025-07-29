@@ -25,11 +25,10 @@ BEGIN
     INNER JOIN [dbo].[User] U ON A.UserID = U.UserID
 END
 
-select * from DoctorDepartment
-
-
+select * from Doctor
 
 -- PR_APP_Appointment_Insert 2, 2, '2024-07-01', 'Scheduled', 'Routine check-up', 'None', '2024-06-01', '2024-06-20', 1, 500.00
+PR_APP_Appointment_Insert 3, 2, '2025-06-25 10:00', 'Scheduled', 'Routine check-up', 'Bring reports','2024-06-01', '2024-06-20', 1, 700.00
 CREATE OR ALTER PROC PR_APP_Appointment_Insert
     @DoctorID              INT,
     @PatientID             INT,
