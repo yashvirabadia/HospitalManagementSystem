@@ -1,0 +1,73 @@
+﻿@model DataTable
+@using System.Data
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4 fw-semibold text-primary">DoctorDepartment List</h5>
+
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+
+                    <!-- Responsive Table Wrapper -->
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">DoctorDepartmentID</th>
+                                    <th scope="col">DoctorID</th>
+                                    <th scope="col">DepartmentID</th>
+                                    <th scope="col">UserID</th>
+                                    <th scope="col">Created</th>
+                                    <th scope="col">User Name</th>
+                                    <th scope="col">User Email</th>
+                                    <th scope="col">MobileNo</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (DataRow row in Model.Rows)
+                                {
+                                    <tr>
+                                        <th>@row["DoctorDepartmentID"]</th>
+                                        <td>@row["DoctorID"]</td>
+                                        <td>@row["DepartmentID"]</td>
+                                        <td>@row["UserID"]</td>
+                                        <td>@row["Created"]</td>
+                                        <td>@row["UserName"]</td>
+                                        <td>@row["Email"]</td>
+                                        <td>@row["MobileNo"]</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a class="btn btn-outline-success btn-xs" asp-controller="DoctorDepartment" asp-action="DoctorDepartmentFormFill" asp-route-ID="@row["DoctorDepartmentID"]">
+                                                    <i class="bi bi-pencil-fill"></i>
+                                                </a>
+
+                                                <a asp-controller="DoctorDepartment" asp-action="DoctorDepartmentDelete" asp-route-DoctorDepartmentID="@row["DoctorDepartmentID"]" class="btn btn-outline-danger btn-xs">
+                                                    <i class="bi bi-x"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- End Responsive Table Wrapper -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

@@ -1,0 +1,103 @@
+﻿
+
+@model HospitalManagementSystem.Models.PatientModel
+
+<div class="col-lg-12">
+    <div class="card shadow-lg rounded-4 border-0">
+        <div class="card-body p-4">
+            <h3 class="card-title mb-4 fw-semibold text-primary">👩‍⚕️ Register Patient</h3>
+
+            <form asp-controller="Patient" asp-action="PatientAddEdit" method="post" class="row g-4">
+
+                <input type="hidden" asp-for="PatientID" />
+
+                <!-- Name -->
+                <div class="col-md-6">
+                    <label asp-for="Name" class="form-label fw-medium">Name</label>
+                    <input asp-for="Name" class="form-control rounded-pill shadow-sm" placeholder="Enter full name" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <!-- Date of Birth -->
+                <div class="col-md-6">
+                    <label asp-for="DateOfBirth" class="form-label fw-medium">Date of Birth</label>
+                    <input asp-for="DateOfBirth" type="date" class="form-control rounded-pill shadow-sm" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                </div>
+
+                <!-- Gender -->
+                <div class="col-md-6">
+                    <label asp-for="Gender" class="form-label fw-medium">Gender</label>
+                    <select asp-for="Gender" class="form-select rounded-pill shadow-sm">
+                        <option value="">-- Select Gender --</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger small"></span>
+                </div>
+
+                <!-- Email -->
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label fw-medium">Email</label>
+                    <input asp-for="Email" type="email" class="form-control rounded-pill shadow-sm" placeholder="Enter email address" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <!-- Phone -->
+                <div class="col-md-6">
+                    <label asp-for="Phone" class="form-label fw-medium">Phone</label>
+                    <input asp-for="Phone" type="tel" class="form-control rounded-pill shadow-sm" placeholder="Enter phone number" />
+                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                </div>
+
+                <!-- Address -->
+                <div class="col-md-6">
+                    <label asp-for="Address" class="form-label fw-medium">Address</label>
+                    <input asp-for="Address" class="form-control rounded-pill shadow-sm" placeholder="Street, Locality..." />
+                    <span asp-validation-for="Address" class="text-danger small"></span>
+                </div>
+
+                <!-- City -->
+                <div class="col-md-6">
+                    <label asp-for="City" class="form-label fw-medium">City</label>
+                    <input asp-for="City" class="form-control rounded-pill shadow-sm" />
+                    <span asp-validation-for="City" class="text-danger small"></span>
+                </div>
+
+                <!-- State -->
+                <div class="col-md-6">
+                    <label asp-for="State" class="form-label fw-medium">State</label>
+                    <input asp-for="State" class="form-control rounded-pill shadow-sm" />
+                    <span asp-validation-for="State" class="text-danger small"></span>
+                </div>
+
+                <!-- Is Active -->
+                <div class="col-md-6 mt-2">
+                    <div class="form-check">
+                        <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label fw-medium">Is Active</label>
+                    </div>
+                </div>
+
+                <!-- Hidden Fields -->
+                <input type="hidden" asp-for="Created" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                <input type="hidden" asp-for="Modified" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+
+                <!-- User ID -->
+                <div class="col-md-6">
+                    <label asp-for="UserID" class="form-label fw-medium">User ID</label>
+                    <input asp-for="UserID" type="number" class="form-control rounded-pill shadow-sm" />
+                    <span asp-validation-for="UserID" class="text-danger small"></span>
+                </div>
+
+                <!-- Buttons -->
+                <div class="col-12 text-center mt-3">
+                    <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill shadow">Save</button>
+                    <button type="reset" class="btn btn-outline-secondary px-4 py-2 rounded-pill ms-2">Reset</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
