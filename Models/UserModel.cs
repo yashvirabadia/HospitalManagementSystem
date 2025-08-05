@@ -20,7 +20,7 @@ namespace HospitalManagementSystem.Models
 
             public DateTime? Created { get; set; }
 
-            public DateTime Modified { get; set; } = DateTime.Now;
+            public DateTime? Modified { get; set; } = DateTime.Now;
         
     }
 }

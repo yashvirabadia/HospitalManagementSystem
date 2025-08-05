@@ -31,9 +31,25 @@ namespace HospitalManagementSystem.Controllers
         }
         #endregion
 
-       #region Doctor Add Edit
+        #region Doctor Add Edit
+        [HttpGet]
+        public IActionResult DoctorAddEdit()
+        {
+            return View();
+        }
+
+        [HttpPost]
         public IActionResult DoctorAddEdit(DoctorModel doctorModel)
         {
+            if (!ModelState.IsValid)
+            {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+
+                return View("DoctorAddEdit", doctorModel);
+            }
 
             if (ModelState.IsValid)
             {
@@ -57,6 +73,8 @@ namespace HospitalManagementSystem.Controllers
                                 command.CommandText = "PR_Doc_Doctor_UpdateByPK";
                                 command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = doctorModel.DoctorID;
                              }
+
+                            doctorModel.Modified = DateTime.Now;
 
                             command.Parameters.Add("@Name", SqlDbType.NVarChar).Value = doctorModel.Name;
                             command.Parameters.Add("@Phone", SqlDbType.NVarChar).Value = doctorModel.Phone;

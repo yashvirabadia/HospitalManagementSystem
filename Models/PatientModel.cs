@@ -8,16 +8,10 @@ namespace HospitalManagementSystem.Models
     {
         public int? PatientID { get; set; }
 
-        [Required]
-        [StringLength(100)]
         public required string Name { get; set; }
 
-        [Required]
-        [DataType(DataType.Date)]
-        [Display(Name = "Date of Birth")]
-        public DateTime DateOfBirth { get; set; }
 
-        [Required]
+        public DateTime DateOfBirth { get; set; }
         [StringLength(10)]
         public required string Gender { get; set; }
 
