@@ -24,29 +24,23 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">DoctorDepartmentID</th>
-                                    <th scope="col">DoctorID</th>
-                                    <th scope="col">DepartmentID</th>
-                                    <th scope="col">UserID</th>
-                                    <th scope="col">Created</th>
-                                    <th scope="col">User Name</th>
-                                    <th scope="col">User Email</th>
-                                    <th scope="col">MobileNo</th>
+                                    @* <th scope="col">DocDepID</th> *@
                                     <th scope="col">Action</th>
+                                    <th scope="col">DepartmentName</th>
+                                    <th scope="col">DoctorName</th>
+                                    <th scope="col">Qualification</th>
+                                    <th scope="col">UserName</th>
+                                    <th scope="col">UserEmail</th>
+                                    <th scope="col">MobileNo</th>
+                                    <th scope="col">Created</th>
+                                    <th scope="col">Modified</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (DataRow row in Model.Rows)
                                 {
                                     <tr>
-                                        <th>@row["DoctorDepartmentID"]</th>
-                                        <td>@row["DoctorID"]</td>
-                                        <td>@row["DepartmentID"]</td>
-                                        <td>@row["UserID"]</td>
-                                        <td>@row["Created"]</td>
-                                        <td>@row["UserName"]</td>
-                                        <td>@row["Email"]</td>
-                                        <td>@row["MobileNo"]</td>
+                                        @* <th>@row["DoctorDepartmentID"]</th> *@
                                         <td>
                                             <div class="d-flex gap-2">
                                                 <a class="btn btn-outline-success btn-xs" asp-controller="DoctorDepartment" asp-action="DoctorDepartmentFormFill" asp-route-ID="@row["DoctorDepartmentID"]">
@@ -58,6 +52,15 @@
                                                 </a>
                                             </div>
                                         </td>
+                                        <td>@row["DepartmentName"]</td>
+                                        <td>@row["DoctorName"]</td>
+                                        <td>@row["Qualification"]</td>
+                                        <td>@row["UserName"]</td>
+                                        <td>@row["Email"]</td>
+                                        <td>@row["MobileNo"]</td>
+                                        <td>@Convert.ToDateTime(row["Created"]).ToString("dd-MM-yyyy")</td>
+                                        <td>@Convert.ToDateTime(row["Modified"]).ToString("dd-MM-yyyy")</td>
+                                        
                                     </tr>
                                 }
                             </tbody>

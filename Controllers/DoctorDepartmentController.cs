@@ -19,13 +19,13 @@ namespace HospitalManagementSystem.Controllers
         {
 
             string connectionString = this.configuration.GetConnectionString("ConnectionString");
-            SqlConnection connection = new SqlConnection(connectionString);
+            SqlConnection connection = new(connectionString);
             connection.Open();
             SqlCommand command = connection.CreateCommand();
             command.CommandType = CommandType.StoredProcedure;
             command.CommandText = "PR_DOCDEP_DoctorDepartment_SelectAll";
             SqlDataReader reader = command.ExecuteReader();
-            DataTable table = new DataTable();
+            DataTable table = new();
             table.Load(reader);
             return View(table);
         }
@@ -46,30 +46,28 @@ namespace HospitalManagementSystem.Controllers
                 try
                 {
                     string connectionString = this.configuration.GetConnectionString("ConnectionString");
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    using (SqlConnection connection = new(connectionString))
                     {
                         connection.Open();
-                        using (SqlCommand command = connection.CreateCommand())
+                        using SqlCommand command = connection.CreateCommand();
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        if (doctorDepartmentModel.DoctorDepartmentID != null && doctorDepartmentModel.DoctorDepartmentID > 0)
                         {
-                            command.CommandType = CommandType.StoredProcedure;
-
-                            if (doctorDepartmentModel.DoctorDepartmentID != null && doctorDepartmentModel.DoctorDepartmentID > 0)
-                            {
-                                command.CommandText = "PR_DOCDEP_DoctorDepartment_UpdateByPK";
-                                command.Parameters.AddWithValue("@DoctorDepartmentID", doctorDepartmentModel.DoctorDepartmentID);
-                            }
-                            else
-                            {
-                                command.CommandText = "PR_DOCDEP_DoctorDepartment_Insert";
-                            }
-
-                            command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = doctorDepartmentModel.DoctorID;
-                            command.Parameters.Add("@DepartmentID", SqlDbType.Int).Value = doctorDepartmentModel.DepartmentID;
-                            command.Parameters.Add("@Modified", SqlDbType.DateTime).Value = doctorDepartmentModel.Modified;
-                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = doctorDepartmentModel.UserID;
-
-                            command.ExecuteNonQuery();
+                            command.CommandText = "PR_DOCDEP_DoctorDepartment_UpdateByPK";
+                            command.Parameters.AddWithValue("@DoctorDepartmentID", doctorDepartmentModel.DoctorDepartmentID);
                         }
+                        else
+                        {
+                            command.CommandText = "PR_DOCDEP_DoctorDepartment_Insert";
+                        }
+
+                        command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = doctorDepartmentModel.DoctorID;
+                        command.Parameters.Add("@DepartmentID", SqlDbType.Int).Value = doctorDepartmentModel.DepartmentID;
+                        command.Parameters.Add("@Modified", SqlDbType.DateTime).Value = doctorDepartmentModel.Modified;
+                        command.Parameters.Add("@UserID", SqlDbType.Int).Value = doctorDepartmentModel.UserID;
+
+                        command.ExecuteNonQuery();
                     }
 
                     return RedirectToAction("DoctorDepartmentList");
@@ -87,33 +85,29 @@ namespace HospitalManagementSystem.Controllers
         #region Doctor Department Form Fill
         public IActionResult DoctorDepartmentFormFill(int ID)
         {
-            DoctorDepartmentModel model = new DoctorDepartmentModel();
+            DoctorDepartmentModel model = new();
 
             if (ID > 0)
             {
                 try
                 {
                     string connectionString = this.configuration.GetConnectionString("ConnectionString");
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    using (SqlConnection connection = new(connectionString))
                     {
                         connection.Open();
-                        using (SqlCommand command = connection.CreateCommand())
-                        {
-                            command.CommandType = CommandType.StoredProcedure;
-                            command.CommandText = "PR_DOCDEP_DoctorDepartment_SelectByPK";
-                            command.Parameters.AddWithValue("DoctorDepartmentID", ID);
+                        using SqlCommand command = connection.CreateCommand();
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandText = "PR_DOCDEP_DoctorDepartment_SelectByPK";
+                        command.Parameters.AddWithValue("DoctorDepartmentID", ID);
 
-                            using (SqlDataReader reader = command.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    model.UserID = Convert.ToInt32(reader["UserID"]);
-                                    model.DoctorID = Convert.ToInt32(reader["DoctorID"]);
-                                    model.DepartmentID = Convert.ToInt32(reader["DepartmentID"]);
-                                    model.DoctorDepartmentID = ID;
-                                    model.Modified = DateTime.Now;
-                                }
-                            }
+                        using SqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            model.UserID = Convert.ToInt32(reader["UserID"]);
+                            model.DoctorID = Convert.ToInt32(reader["DoctorID"]);
+                            model.DepartmentID = Convert.ToInt32(reader["DepartmentID"]);
+                            model.DoctorDepartmentID = ID;
+                            model.Modified = DateTime.Now;
                         }
                     }
 
@@ -138,7 +132,7 @@ namespace HospitalManagementSystem.Controllers
             try
             {
                 string connectionString = this.configuration.GetConnectionString("ConnectionString");
-                SqlConnection connection = new SqlConnection(connectionString);
+                SqlConnection connection = new(connectionString);
                 connection.Open();
                 SqlCommand command = connection.CreateCommand();
                 command.CommandType = CommandType.StoredProcedure;

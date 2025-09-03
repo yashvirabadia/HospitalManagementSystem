@@ -1,9 +1,11 @@
 ﻿@model HospitalManagementSystem.Models.PatientModel
 
-<div class="col-lg-10 offset-lg-1">
+<div class="col-lg-auto">
     <div class="card shadow-lg rounded-4 border-0">
         <div class="card-body p-4">
-            <h3 class="card-title mb-4 fw-semibold text-primary fs-3">👩‍⚕️ Register Patient</h3>
+            <h3 class="card-title mb-4 fw-semibold text-primary fs-3">
+                @(Model?.PatientID == null || Model?.PatientID == 0 ? "👩‍⚕️ Add Patient" : "👩‍⚕️ Save PatientID")
+            </h3>
 
             <form asp-controller="Patient" asp-action="PatientAddEdit" method="post" class="needs-validation" novalidate>
 
@@ -13,14 +15,14 @@
                 <div class="mb-3">
                     <label asp-for="Name" class="form-label fw-medium">Name</label>
                     <input asp-for="Name" class="form-control rounded-pill shadow-sm" placeholder="Enter full name" required />
-                    @* <span asp-validation-for="Name" class="text-danger small"></span> *@
+                    <div class="invalid-feedback">Please enter full name.</div>
                 </div>
 
                 <!-- Date of Birth -->
                 <div class="mb-3">
                     <label asp-for="DateOfBirth" class="form-label fw-medium">Date of Birth</label>
                     <input asp-for="DateOfBirth" type="date" class="form-control rounded-pill shadow-sm" required />
-                    @* <span asp-validation-for="DateOfBirth" class="text-danger small"></span> *@
+                    <div class="invalid-feedback">Please select date of birth.</div>
                 </div>
 
                 <!-- Gender -->
@@ -32,90 +34,117 @@
                         <option>Female</option>
                         <option>Other</option>
                     </select>
-                    @* <span asp-validation-for="Gender" class="text-danger small"></span> *@
+                    <div class="invalid-feedback">Please select gender.</div>
                 </div>
 
                 <!-- Email -->
                 <div class="mb-3">
                     <label asp-for="Email" class="form-label fw-medium">Email</label>
                     <input asp-for="Email" type="email" class="form-control rounded-pill shadow-sm" placeholder="Enter email address" required />
-                    @* <span asp-validation-for="Email" class="text-danger small"></span> *@
+                    <div class="invalid-feedback">Please enter a valid email.</div>
                 </div>
 
                 <!-- Phone -->
                 <div class="mb-3">
                     <label asp-for="Phone" class="form-label fw-medium">Phone</label>
                     <input asp-for="Phone" type="tel" class="form-control rounded-pill shadow-sm" placeholder="Enter phone number" required />
-                    @* <span asp-validation-for="Phone" class="text-danger small"></span> *@
+                    <div class="invalid-feedback">Please enter phone number.</div>
                 </div>
 
                 <!-- Address -->
                 <div class="mb-3">
                     <label asp-for="Address" class="form-label fw-medium">Address</label>
                     <input asp-for="Address" class="form-control rounded-pill shadow-sm" placeholder="Street, Locality..." required />
-                    @* <span asp-validation-for="Address" class="text-danger small"></span> *@
+                    <div class="invalid-feedback">Please enter address.</div>
                 </div>
 
                 <!-- City -->
                 <div class="mb-3">
                     <label asp-for="City" class="form-label fw-medium">City</label>
                     <input asp-for="City" class="form-control rounded-pill shadow-sm" required />
-                    @* <span asp-validation-for="City" class="text-danger small"></span> *@
+                    <div class="invalid-feedback">Please enter city.</div>
                 </div>
 
                 <!-- State -->
                 <div class="mb-3">
                     <label asp-for="State" class="form-label fw-medium">State</label>
                     <input asp-for="State" class="form-control rounded-pill shadow-sm" required />
-                    @* <span asp-validation-for="State" class="text-danger small"></span> *@
+                    <div class="invalid-feedback">Please enter state.</div>
                 </div>
 
                 <!-- Is Active -->
                 <div class="mb-3">
-                    <div class="form-check form-switch mt-2">
-                        <input asp-for="IsActive" type="checkbox" class="form-check-input" checked />
-                        <label asp-for="IsActive" class="form-check-label fw-medium">Is Active</label>
+                    <label class="form-label fw-medium d-block mb-1" for="IsActiveSwitch">Is Active</label>
+                    <div class="form-check form-switch">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" checked />
                     </div>
                 </div>
 
                 <!-- Hidden Fields -->
-                <input type="hidden" asp-for="Created"  />
-                <input type="hidden" asp-for="Modified"  />
+                <input type="hidden" asp-for="Created" />
+                <input type="hidden" asp-for="Modified" />
 
                 <!-- User ID -->
                 <div class="mb-3">
                     <label asp-for="UserID" class="form-label fw-medium">User ID</label>
-                    <input asp-for="UserID" type="number" class="form-control rounded-pill shadow-sm" required />
-                    @* <span asp-validation-for="UserID" class="text-danger small"></span> *@
+                    <input asp-for="UserID" type="number" class="form-control rounded-pill shadow-sm" placeholder="Enter User ID" required />
+                    <div class="invalid-feedback">Please enter user ID.</div>
                 </div>
 
                 <!-- Buttons -->
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill shadow">Save</button>
-                    <button type="reset" class="btn btn-outline-secondary px-4 py-2 rounded-pill ms-2">Reset</button>
+                    <a asp-controller="Patient" asp-action="PatientList" class="btn btn-outline-secondary px-4 py-2 rounded-pill ms-2">Back to list</a>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 
-@section Scripts {
+@* @section Scripts {
     <script>
         (() => {
             'use strict';
-            const forms = document.querySelectorAll('form');
+
+            const forms = document.querySelectorAll('.needs-validation');
 
             Array.from(forms).forEach(form => {
-                form.addEventListener('submit', e => {
-                    if (!form.checkValidity()) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
+                form.addEventListener('submit', event => {
+                    const inputs = form.querySelectorAll('input, textarea, select');
 
-                    form.classList.add('was-validated');
+                    inputs.forEach(input => {
+                        input.classList.remove('is-valid', 'is-invalid');
+                        if (!input.checkValidity()) {
+                            input.classList.add('is-invalid');
+                        }
+                    });
+
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
                 }, false);
             });
+        })();
+    </script>
+} *@
+
+@section Scripts {
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                const forms = document.getElementsByClassName('needs-validation');
+                Array.prototype.forEach.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
         })();
     </script>
 }

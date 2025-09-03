@@ -24,37 +24,28 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">AppointmentID</th>
-                                    <th scope="col">DoctorName</th>
+                                    
+                                    @* <th scope="col">AppID</th> *@
+                                    <th scope="col">Action</th>
+                                    <th scope="col">DocName</th>
                                     <th scope="col">Specialization</th>
-                                    <th scope="col">PatientID</th>
                                     <th scope="col">PatientName</th>
                                     <th scope="col">Gender</th>
-                                    <th scope="col">AppointmentDate</th>
-                                    <th scope="col">AppointmentStatus</th>
+                                    <th scope="col">AppDate</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Description</th>
-                                    <th scope="col">Special Remarks</th>
+                                    <th scope="col">SpecialRemarks</th>
+                                    <th scope="col">Amount</th>
                                     <th scope="col">Created</th>
                                     <th scope="col">Modified</th>
-                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (DataRow row in Model.Rows)
                                 {
                                     <tr>
-                                        <th>@row["AppointmentID"]</th>
-                                        <td>@row["DoctorName"]</td>
-                                        <td>@row["Specialization"]</td>
-                                        <td>@row["PatientID"]</td>
-                                        <td>@row["PatientName"]</td>
-                                        <td>@row["Gender"]</td>
-                                        <td>@row["AppointmentDate"]</td>
-                                        <td>@row["AppointmentStatus"]</td>
-                                        <td>@row["Description"]</td>
-                                        <td>@row["SpecialRemarks"]</td>
-                                        <td>@row["Created"]</td>
-                                        <td>@row["Modified"]</td>
+
+                                        @* <th>@row["AppointmentID"]</th> *@
                                         <td>
                                             <div class="d-flex gap-2">
                                                 <a class="btn btn-outline-success btn-xs" asp-controller="Appointment" asp-action="AppointmentFormFill" asp-route-ID="@row["AppointmentID"]">
@@ -67,6 +58,21 @@
                                             </div>
 
                                         </td>
+                                       
+                                        <td>@row["DoctorName"]</td>
+                                        <td>@row["Specialization"]</td>
+                                        <td>@row["PatientName"]</td>
+                                        <td>@row["Gender"]</td>
+                                        <td>@row["AppointmentDate"]</td>
+                                        <td>@row["AppointmentStatus"]</td>
+                                        <td>@row["Description"]</td>
+                                        <td>@row["SpecialRemarks"]</td>
+                                        <td>@row["TotalConsultedAmount"]</td>
+                                        <td>@Convert.ToDateTime(row["Created"]).ToString("dd-MM-yyyy")</td>
+                                        <td>@Convert.ToDateTime(row["Modified"]).ToString("dd-MM-yyyy")</td>
+                                        @* <td>@row["Created"]</td>
+                                        <td>@row["Modified"]</td> *@
+                                        
                                     </tr>
                                 }
                             </tbody>

@@ -3,7 +3,9 @@
 <div class="col-lg-12">
     <div class="card shadow-lg rounded-4 border-0">
         <div class="card-body p-4">
-            <h3 class="card-title mb-4 fw-semibold text-primary fs-3">👤 User Form</h3>
+            <h3 class="card-title mb-4 fw-semibold text-primary fs-3">
+                @(Model?.UserID == null || Model?.UserID == 0 ? "👤 Add Patient" : "👤 Save PatientID")
+            </h3>
 
             <form asp-action="UserAddEdit" method="post" class="needs-validation" novalidate>
                 <input type="hidden" asp-for="UserID" />
@@ -41,10 +43,11 @@
                 </div>
 
                 <!-- IsActive -->
-                <div class="mb-3 form-check form-switch">
-                    <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" id="IsActiveSwitch" />
-                    <label class="form-check-label fw-medium" for="IsActiveSwitch">Is Active</label>
-                    <span asp-validation-for="IsActive" class="text-danger small d-block"></span>
+                <div class="mb-3">
+                    <label class="form-label fw-medium d-block mb-1" for="IsActiveSwitch">Is Active</label>
+                    <div class="form-check form-switch">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" checked />
+                    </div>
                 </div>
 
                 <!-- Hidden Modified -->
@@ -55,7 +58,7 @@
                 <!-- Buttons -->
                 <div class="text-center mt-3">
                     <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill shadow">Save</button>
-                    <button type="reset" class="btn btn-outline-secondary px-4 py-2 rounded-pill ms-2">Reset</button>
+                    <a asp-controller="User" asp-action="UserList" class="btn btn-outline-secondary px-4 py-2 rounded-pill ms-2">Back to list</a>
                 </div>
             </form>
         </div>
