@@ -8,6 +8,7 @@ using System.Text;
 
 namespace HospitalManagementSystem.Controllers
 {
+    
     public class UserController : Controller
     {
         private IConfiguration configuration;
@@ -18,25 +19,9 @@ namespace HospitalManagementSystem.Controllers
             configuration = _configuration;
         }
 
-        //#region User List
-        //public IActionResult UserList()
-        //{
-
-
-        //    string connectionString = this.configuration.GetConnectionString("ConnectionString");
-        //    SqlConnection connection = new SqlConnection(connectionString);
-        //    connection.Open();
-        //    SqlCommand command = connection.CreateCommand();
-        //    command.CommandType = CommandType.StoredProcedure;
-        //    command.CommandText = "PR_USR_Users_Selectall";
-        //    SqlDataReader reader = command.ExecuteReader();
-        //    DataTable table = new DataTable();
-        //    table.Load(reader);
-        //    return View(table);
-        //}
-        //#endregion
 
         #region User List
+        [CheckAccess]
         public IActionResult UserList(string name, string email, string mobileNo)
         {
             DataTable table = new DataTable();
@@ -52,7 +37,6 @@ namespace HospitalManagementSystem.Controllers
                     command.CommandType = CommandType.StoredProcedure;
                     command.CommandText = "PR_USR_Users_SelectAll";
 
-                    // ✅ Pass filters (NULL if empty)
                     command.Parameters.AddWithValue("@Name", string.IsNullOrEmpty(name) ? (object)DBNull.Value : name);
                     command.Parameters.AddWithValue("@Email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
                     command.Parameters.AddWithValue("@MobileNo", string.IsNullOrEmpty(mobileNo) ? (object)DBNull.Value : mobileNo);
@@ -70,6 +54,7 @@ namespace HospitalManagementSystem.Controllers
 
 
         #region User Add Edit
+        [CheckAccess]
         public IActionResult UserAddEdit(UserModel userModel)
         {
             if (!ModelState.IsValid)
@@ -127,6 +112,7 @@ namespace HospitalManagementSystem.Controllers
         #endregion
 
         #region User Form Fill
+        [CheckAccess]
         public IActionResult UserFormFill(int ID)
         {
             UserModel model = new UserModel
@@ -181,6 +167,7 @@ namespace HospitalManagementSystem.Controllers
 
 
         #region User Delete
+        [CheckAccess]
         public IActionResult UserDelete(int UserID)
         {
             try
@@ -205,6 +192,7 @@ namespace HospitalManagementSystem.Controllers
 
         #region Export to Excel
         [HttpGet("ExportToExcel")]
+        [CheckAccess]
         public IActionResult ExportToExcel()
         {
             DataTable dt = new DataTable();
@@ -250,6 +238,7 @@ namespace HospitalManagementSystem.Controllers
 
         #region Export to CSV
         [HttpGet("ExportToCSV")]
+        [CheckAccess]
         public IActionResult ExportToCSV()
         {
             DataTable dt = new DataTable();
@@ -293,6 +282,7 @@ namespace HospitalManagementSystem.Controllers
         #endregion
 
         #region search user
+        [CheckAccess]
         public IActionResult UserSearch(string searchTerm, string filterBy)
         {
             DataTable dt = new DataTable();
@@ -309,7 +299,7 @@ namespace HospitalManagementSystem.Controllers
                                 [User].Modified
                          FROM [dbo].[User]";
 
-                // ✅ Apply filter only if both filterBy and searchTerm exist
+                //Apply filter only if both filterBy and searchTerm exist
                 if (!string.IsNullOrEmpty(searchTerm) && !string.IsNullOrEmpty(filterBy))
                 {
                     query += $" WHERE [User].[{filterBy}] LIKE @Search";
@@ -327,9 +317,76 @@ namespace HospitalManagementSystem.Controllers
                 }
             }
 
-            return View("UserList", dt); // ✅ reuse your UserList view
+            return View("UserList", dt);
         }
         #endregion
 
+        #region User Login
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult UserLogin(UserLoginModel userLoginModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    string connectionString = this.configuration.GetConnectionString("ConnectionString");
+                    SqlConnection sqlConnection = new SqlConnection(connectionString);
+                    sqlConnection.Open();
+                    SqlCommand sqlCommand = sqlConnection.CreateCommand();
+                    sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "PR_USR_User_ValidateLogin";
+                    sqlCommand.Parameters.Add("@Username", SqlDbType.VarChar).Value = userLoginModel.Username;
+                    sqlCommand.Parameters.Add("@Password", SqlDbType.VarChar).Value = userLoginModel.Password;
+                    SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(sqlDataReader);
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in dataTable.Rows)
+                        {
+                            HttpContext.Session.SetInt32("UserID", Convert.ToInt32(dr["UserID"]));
+                            HttpContext.Session.SetString("UserName", dr["UserName"].ToString());
+                            HttpContext.Session.SetString("EmailAddress", dr["Email"].ToString());
+                        }
+
+                        return RedirectToAction("UserList", "User");
+
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "User is not found";
+                        return RedirectToAction("Login", "User");
+
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                TempData["ErrorMessage"] = e.Message;
+            }
+
+            return RedirectToAction("Login");
+        }
+        //public IActionResult Login()
+        //{
+        //    return View();
+        //}
+        #endregion
+
+        #region User Logout
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "User");
+        }
+        #endregion
     }
 }

@@ -32,16 +32,25 @@ namespace HospitalManagementSystem.Controllers
         #endregion
 
 
-        #region Department Insert (Add/Edit)
+        #region Department (Add/Edit)
+        
+        [HttpGet]
+        public IActionResult DepartmentAddEdit()
+        {
+            UserDropDown();  
+            return View();
+        }
+
+        [HttpPost]
         public IActionResult DepartmentAddEdit(DepartmentModel departmentModel)
         {
+            // remove validation for properties not posted from the form
+            ModelState.Remove("Created");
+            ModelState.Remove("Modified");
+
             if (!ModelState.IsValid)
             {
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(error.ErrorMessage);
-                }
-
+                UserDropDown();
                 return View("DepartmentAddEdit", departmentModel);
             }
 
@@ -58,6 +67,8 @@ namespace HospitalManagementSystem.Controllers
                         if (departmentModel.DepartmentID == null)
                         {
                             command.CommandText = "PR_DEPT_Department_Insert";
+                            departmentModel.Created = DateTime.Now;
+                            command.Parameters.AddWithValue("@Created", departmentModel.Created);
                         }
                         else
                         {
@@ -65,6 +76,7 @@ namespace HospitalManagementSystem.Controllers
                             command.Parameters.Add("@DepartmentID", SqlDbType.Int).Value = departmentModel.DepartmentID;
                         }
 
+                        // always set Modified
                         departmentModel.Modified = DateTime.Now;
 
                         command.Parameters.AddWithValue("@DepartmentName", departmentModel.DepartmentName);
@@ -82,9 +94,11 @@ namespace HospitalManagementSystem.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "Error saving department: " + ex.Message;
+                UserDropDown();
                 return View("DepartmentAddEdit", departmentModel);
             }
         }
+
         #endregion
 
         #region Department Fill Form
@@ -124,6 +138,7 @@ namespace HospitalManagementSystem.Controllers
                         }
                     }
 
+                    UserDropDown();
                     return View("DepartmentAddEdit", model);
                 }
                 catch (Exception ex)
@@ -162,40 +177,34 @@ namespace HospitalManagementSystem.Controllers
 
         #endregion
 
-        public IActionResult DepartmentSave(DepartmentModel departmentModel)
+
+        #region User Drop Down
+        public void UserDropDown()
         {
-            if (departmentModel.DepartmentID <= 0)
+            string connectionString = this.configuration.GetConnectionString("ConnectionString");
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+
+            SqlCommand command = connection.CreateCommand();
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = "PR_USR_User_SelectForDropDown";
+
+            SqlDataReader reader = command.ExecuteReader();
+            DataTable dataTable = new DataTable();
+            dataTable.Load(reader);
+
+            List<UserDropDownModel> userList = new List<UserDropDownModel>();
+            foreach (DataRow data in dataTable.Rows)
             {
-                ModelState.AddModelError("DepartmentID", "A valid Department is required.");
+                UserDropDownModel model = new UserDropDownModel();
+                model.UserID = Convert.ToInt32(data["UserID"]);
+                model.UserName = data["UserName"].ToString();
+                userList.Add(model);
             }
 
-            if (ModelState.IsValid)
-            {
-                string connectionString = this.configuration.GetConnectionString("ConnectionString");
-                SqlConnection connection = new SqlConnection(connectionString);
-                connection.Open();
-                SqlCommand command = connection.CreateCommand();
-
-                if (departmentModel.DepartmentID > 0)
-                {
-                    command.CommandText = "PR_DEPT_Department_UpdateByPK";
-                    command.Parameters.AddWithValue("DepartmentID", departmentModel.DepartmentID);
-                }
-                else
-                {
-                    command.CommandText = "PR_DEPT_Department_Insert";
-                }
-
-                command.Parameters.Add("@DepartmentName", SqlDbType.VarChar).Value = departmentModel.DepartmentName;
-                command.Parameters.Add("@Description", SqlDbType.VarChar).Value = departmentModel.Description;
-                command.Parameters.Add("@IsActive", SqlDbType.Decimal).Value = departmentModel.IsActive;
-                command.Parameters.Add("@Modified", SqlDbType.VarChar).Value = departmentModel.Modified;
-                command.Parameters.Add("@UserID", SqlDbType.Int).Value = departmentModel.UserID;
-                command.ExecuteNonQuery();
-                return RedirectToAction("ProductList");
-            }
-
-            return View("ProductAddEdit", departmentModel);
+            ViewBag.UserList = userList;
         }
+
+        #endregion
     }
 }

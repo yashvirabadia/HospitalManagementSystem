@@ -53,17 +53,17 @@
                 <input type="hidden" asp-for="Created" />
                 <input type="hidden" asp-for="Modified" />
 
-                <!-- User ID -->
-                <div class="col-12">
-                    <label asp-for="UserID" class="form-label fw-medium">User ID</label>
-                    <input asp-for="UserID"
-                           type="number"
-                           class="form-control rounded-pill shadow-sm"
-                           required />
-                    <div class="invalid-feedback">
-                        Please enter a valid User ID.
-                    </div>
+                <div class="form-group">
+                    <label asp-for="UserID" class="control-label"></label>
+                    <select asp-for="UserID" class="form-control"
+                            asp-items="@(new SelectList(ViewBag.UserList, "UserID", "UserName"))">
+                        <option value="">-- Select User --</option>
+                    </select>
+                    <span asp-validation-for="UserID" class="text-danger"></span>
                 </div>
+
+
+
 
                 <!-- Buttons -->
                 <div class="col-12 text-center mt-3">

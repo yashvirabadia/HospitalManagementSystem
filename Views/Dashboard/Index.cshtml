@@ -1,1 +1,157 @@
-﻿<h1>Dashboard</h1>
+﻿@model HospitalManagementSystem.Models.DashboardModel
+
+<div class="row g-4">
+    <!-- Users -->
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 rounded-3" style="background:#f0f7ff;">
+            <div class="card-body text-center">
+                <i class="bi bi-people fs-3 text-primary"></i>
+                <h4 class="fw-bold mt-2 text-dark">@Model.UserCount</h4>
+                <p class="text-muted mb-2">Users</p>
+                <a href="/User/UserList" class="btn btn-sm btn-light border rounded-pill">View</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctors -->
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 rounded-3" style="background:#fdf4f6;">
+            <div class="card-body text-center">
+                <i class="bi bi-person-badge fs-3 text-danger"></i>
+                <h4 class="fw-bold mt-2 text-dark">@Model.DoctorCount</h4>
+                <p class="text-muted mb-2">Doctors</p>
+                <a href="/Doctor/DoctorList" class="btn btn-sm btn-light border rounded-pill">View</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patients -->
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 rounded-3" style="background:#f3faf4;">
+            <div class="card-body text-center">
+                <i class="bi bi-heart-pulse fs-3 text-success"></i>
+                <h4 class="fw-bold mt-2 text-dark">@Model.PatientCount</h4>
+                <p class="text-muted mb-2">Patients</p>
+                <a href="/Patient/PatientList" class="btn btn-sm btn-light border rounded-pill">View</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Departments -->
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 rounded-3" style="background:#fff8f0;">
+            <div class="card-body text-center">
+                <i class="bi bi-building fs-3 text-warning"></i>
+                <h4 class="fw-bold mt-2 text-dark">@Model.DepartmentCount</h4>
+                <p class="text-muted mb-2">Departments</p>
+                <a href="/Department/DepartmentList" class="btn btn-sm btn-light border rounded-pill">View</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointments -->
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 rounded-3" style="background:#f5f2fa;">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar-event fs-3 text-secondary"></i>
+                <h4 class="fw-bold mt-2 text-dark">@Model.AppointmentCount</h4>
+                <p class="text-muted mb-2">Appointments</p>
+                <a href="/Appointment/AppointmentList" class="btn btn-sm btn-light border rounded-pill">View</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employees -->
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 rounded-3" style="background:#f9f5fb;">
+            <div class="card-body text-center">
+                <i class="bi bi-briefcase fs-3 text-info"></i>
+                <h4 class="fw-bold mt-2 text-dark">@Model.EmployeeCount</h4>
+                <p class="text-muted mb-2">Employees</p>
+                <a href="/Employee/EmployeeList" class="btn btn-sm btn-light border rounded-pill">View</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<!-- Charts -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body">
+                <h6 class="fw-bold text-muted mb-3">Revenue Trend</h6>
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body">
+                <h6 class="fw-bold text-muted mb-3">Appointments Overview</h6>
+                <canvas id="appointmentChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Revenue Chart (Line - Smooth & Pastel)
+        var revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.RevenueLabels)),
+                datasets: [{
+                    label: 'Revenue',
+                    data: @Html.Raw(Json.Serialize(Model.RevenueData)),
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13,110,253,0.15)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Appointment Chart (Doughnut - Modern Look)
+        var appointmentCtx = document.getElementById('appointmentChart').getContext('2d');
+        new Chart(appointmentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.AppointmentLabels)),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.AppointmentData)),
+                    backgroundColor: [
+                        '#6ea8fe', // Rich pastel blue (Users)
+                        '#f28b82', // Pastel pink/red (Doctors)
+                        '#81c995', // Pastel green (Patients)
+                        '#ffb74d', // Soft orange (Departments)
+                        '#a78bfa', // Soft purple (Appointments)
+                        '#4dd0e1'  // Teal (Employees)
+                    ],
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#444',
+                            font: { size: 13 }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
