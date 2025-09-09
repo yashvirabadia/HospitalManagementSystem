@@ -31,7 +31,7 @@ namespace HospitalManagementSystem.Controllers
                 model.AppointmentCount = ExecuteCount(connection, "SELECT COUNT(*) FROM Appointment");
                 model.DocDepCount = ExecuteCount(connection, "SELECT COUNT(*) FROM DoctorDepartment");
 
-                // Revenue (using Appointment table + TotalConsultedAmount column)
+                // Revenue (per month)
                 using (SqlCommand cmd = new SqlCommand(
                     "SELECT DATENAME(MONTH, Created) AS [Month], " +
                     "SUM(TotalConsultedAmount) AS Total " +
@@ -46,7 +46,7 @@ namespace HospitalManagementSystem.Controllers
                     }
                 }
 
-                // Appointments per month (using Created instead of Date)
+                // Appointments per month
                 using (SqlCommand cmd = new SqlCommand(
                     "SELECT DATENAME(MONTH, Created) AS [Month], " +
                     "COUNT(*) AS Total " +
@@ -61,6 +61,35 @@ namespace HospitalManagementSystem.Controllers
                     }
                 }
 
+                // Top 5 Doctors by appointment count
+                using (SqlCommand cmd = new SqlCommand(
+                    "SELECT TOP 5 d.Name, COUNT(a.AppointmentID) AS TotalAppointments " +
+                    "FROM Appointment a " +
+                    "INNER JOIN Doctor d ON a.DoctorID = d.DoctorID " +
+                    "GROUP BY d.Name " +
+                    "ORDER BY TotalAppointments DESC", connection))
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        model.TopDoctorLabels.Add(reader["Name"].ToString());
+                        model.TopDoctorData.Add(Convert.ToInt32(reader["TotalAppointments"]));
+                    }
+                }
+
+                // Appointment status distribution
+                //using (SqlCommand cmd = new SqlCommand(
+                //    "SELECT AppointmentStatus, COUNT(*) AS Total " +
+                //    "FROM Appointment " +
+                //    "GROUP BY AppointmentStatus", connection))
+                //using (SqlDataReader reader = cmd.ExecuteReader())
+                //{
+                //    while (reader.Read())
+                //    {
+                //        model.AppointmentStatusLabels.Add(reader["AppointmentStatus"].ToString());
+                //        model.AppointmentStatusData.Add(Convert.ToInt32(reader["Total"]));
+                //    }
+                //}
             }
 
             return View(model);

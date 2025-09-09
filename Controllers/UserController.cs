@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using HospitalManagementSystem.Helpers;
 using HospitalManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -100,7 +101,7 @@ namespace HospitalManagementSystem.Controllers
                         command.ExecuteNonQuery();
                     }
                 }
-
+                TempData["Message"] = "Add/Edited Successfully";
                 return RedirectToAction("UserList");
             }
             catch (Exception ex)
@@ -113,7 +114,7 @@ namespace HospitalManagementSystem.Controllers
 
         #region User Form Fill
         [CheckAccess]
-        public IActionResult UserFormFill(int ID)
+        public IActionResult UserFormFill(string ID) // Encrypted ID from URL
         {
             UserModel model = new UserModel
             {
@@ -123,36 +124,42 @@ namespace HospitalManagementSystem.Controllers
                 MobileNo = "",
             };
 
-            if (ID > 0)
+            // Only attempt decryption if ID is not null or empty
+            if (!string.IsNullOrEmpty(ID))
             {
                 try
                 {
-                    string connectionString = this.configuration.GetConnectionString("ConnectionString");
-                    using (SqlConnection connection = new SqlConnection(connectionString))
-                    {
-                        connection.Open();
-                        using (SqlCommand command = connection.CreateCommand())
-                        {
-                            command.CommandType = CommandType.StoredProcedure;
-                            command.CommandText = "PR_USR_Users_SelectByPK";
-                            command.Parameters.AddWithValue("UserID", ID);
+                    int decryptedID = Convert.ToInt32(UrlEncryptor.Decrypt(ID));
 
-                            using (SqlDataReader reader = command.ExecuteReader())
+                    // Only fetch from DB if decrypted ID is valid
+                    if (decryptedID > 0)
+                    {
+                        string connectionString = this.configuration.GetConnectionString("ConnectionString");
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            connection.Open();
+                            using (SqlCommand command = connection.CreateCommand())
                             {
-                                while (reader.Read())
+                                command.CommandType = CommandType.StoredProcedure;
+                                command.CommandText = "PR_USR_Users_SelectByPK";
+                                command.Parameters.AddWithValue("UserID", decryptedID);
+
+                                using (SqlDataReader reader = command.ExecuteReader())
                                 {
-                                    model.UserID = Convert.ToInt32(reader["UserID"]);
-                                    model.UserName = reader["UserName"].ToString();
-                                    model.Password = reader["Password"].ToString();
-                                    model.Email = reader["Email"].ToString();
-                                    model.MobileNo = reader["MobileNo"].ToString();
-                                    model.IsActive = Convert.ToBoolean(reader["IsActive"]);
+                                    if (reader.Read())
+                                    {
+                                        model.UserID = decryptedID;
+                                        model.UserName = reader["UserName"].ToString();
+                                        model.Password = reader["Password"].ToString();
+                                        model.Email = reader["Email"].ToString();
+                                        model.MobileNo = reader["MobileNo"].ToString();
+                                        model.IsActive = Convert.ToBoolean(reader["IsActive"]);
+                                    }
                                 }
                             }
                         }
                     }
-
-                    return View("UserAddEdit", model);
                 }
                 catch (Exception ex)
                 {
@@ -168,27 +175,42 @@ namespace HospitalManagementSystem.Controllers
 
         #region User Delete
         [CheckAccess]
-        public IActionResult UserDelete(int UserID)
+        public IActionResult UserDelete(string UserID)
         {
+            if (string.IsNullOrEmpty(UserID))
+            {
+                TempData["ErrorMessage"] = "Invalid User ID.";
+                return RedirectToAction("UserList");
+            }
+
             try
             {
+                int decryptedUserID = Convert.ToInt32(UrlEncryptor.Decrypt(UserID));
+
                 string connectionString = this.configuration.GetConnectionString("ConnectionString");
-                SqlConnection connection = new SqlConnection(connectionString);
-                connection.Open();
-                SqlCommand command = connection.CreateCommand();
-                command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = "PR_USR_Users_DeleteByPK";
-                command.Parameters.Add("@UserID", SqlDbType.Int).Value = UserID;
-                command.ExecuteNonQuery();
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "PR_USR_Users_DeleteByPK";
+                    command.Parameters.Add("@UserID", SqlDbType.Int).Value = decryptedUserID;
+
+                    command.ExecuteNonQuery();
+                }
+
+                TempData["Message"] = "Deleted Successfully";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                Console.WriteLine(ex.ToString());
+                TempData["ErrorMessage"] = "Error deleting user: " + ex.Message;
             }
+
             return RedirectToAction("UserList");
         }
         #endregion
+
 
         #region Export to Excel
         [HttpGet("ExportToExcel")]
@@ -236,6 +258,7 @@ namespace HospitalManagementSystem.Controllers
         }
         #endregion
 
+
         #region Export to CSV
         [HttpGet("ExportToCSV")]
         [CheckAccess]
@@ -281,6 +304,7 @@ namespace HospitalManagementSystem.Controllers
         }
         #endregion
 
+
         #region search user
         [CheckAccess]
         public IActionResult UserSearch(string searchTerm, string filterBy)
@@ -320,6 +344,7 @@ namespace HospitalManagementSystem.Controllers
             return View("UserList", dt);
         }
         #endregion
+
 
         #region User Login
 

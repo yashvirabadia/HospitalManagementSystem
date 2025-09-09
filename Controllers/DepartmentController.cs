@@ -90,7 +90,7 @@ namespace HospitalManagementSystem.Controllers
                         command.ExecuteNonQuery();
                     }
                 }
-
+                TempData["Message"] = "Add/Edited Successfully";
                 return RedirectToAction("DepartmentList");
             }
             catch (Exception ex)
@@ -167,6 +167,7 @@ namespace HospitalManagementSystem.Controllers
                 command.CommandType = CommandType.StoredProcedure;
                 command.CommandText = "PR_DEPT_Department_DeleteByPK";
                 command.Parameters.Add("@DepartmentID", SqlDbType.Int).Value = DepartmentID;
+                TempData["Message"] = "Deleted Successfully";
                 command.ExecuteNonQuery();
             }
             catch (Exception ex)

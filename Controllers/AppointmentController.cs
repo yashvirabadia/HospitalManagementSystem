@@ -83,7 +83,7 @@ namespace HospitalManagementSystem.Controllers
                         command.ExecuteNonQuery();
                     }
                 }
-
+                TempData["Message"] = "Add/Edited Successfully";
                 return RedirectToAction("AppointmentList");
             }
             catch (Exception ex)
@@ -163,6 +163,7 @@ namespace HospitalManagementSystem.Controllers
                 command.CommandType = CommandType.StoredProcedure;
                 command.CommandText = "PR_APP_Appointment_DeleteByPK";
                 command.Parameters.Add("@AppointmentID", SqlDbType.Int).Value = AppointmentID;
+                TempData["Message"] = "Deleted Successfully";
                 command.ExecuteNonQuery();
             }
             catch (Exception ex)

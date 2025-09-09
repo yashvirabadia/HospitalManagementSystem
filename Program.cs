@@ -9,6 +9,11 @@ namespace HospitalManagementSystem
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            //Login Service
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSession();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -23,6 +28,8 @@ namespace HospitalManagementSystem
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSession();
 
             app.UseAuthorization();
 
