@@ -4,7 +4,7 @@
     <div class="card shadow-lg rounded-4 border-0">
         <div class="card-body p-4">
             <h3 class="card-title mb-4 fw-semibold text-primary fs-3">
-                @(Model?.UserID == null || Model?.UserID == 0 ? "👤 Add Patient" : "👤 Save PatientID")
+                @(Model?.UserID == null || Model?.UserID == 0 ? "👤 Add User" : "👤 Save User")
             </h3>
 
             <form asp-action="UserAddEdit" method="post" class="needs-validation" novalidate>

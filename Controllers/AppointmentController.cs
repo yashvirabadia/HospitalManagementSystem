@@ -1,5 +1,6 @@
 ﻿using HospitalManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
 using System.Data.SqlClient;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -42,7 +43,9 @@ namespace HospitalManagementSystem.Controllers
                 {
                     Console.WriteLine(error.ErrorMessage);
                 }
-
+                UserDropDown();
+                DoctorDropDown();
+                PatientDropDown();
                 return View("AppointmentAddEdit", appointmentModel);
             }
 
@@ -86,6 +89,9 @@ namespace HospitalManagementSystem.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "Error saving appointment: " + ex.Message;
+                UserDropDown();
+                DoctorDropDown();
+                PatientDropDown();
                 return View("AppointmentAddEdit", appointmentModel);
             }
         }
@@ -137,7 +143,9 @@ namespace HospitalManagementSystem.Controllers
                     return RedirectToAction("AppointmentList");
                 }
             }
-
+            UserDropDown();
+            DoctorDropDown();
+            PatientDropDown();
             return View("AppointmentAddEdit", model);
         }
         #endregion
@@ -165,5 +173,101 @@ namespace HospitalManagementSystem.Controllers
             return RedirectToAction("AppointmentList");
         }
         #endregion
+
+        #region User Drop Down
+        public void UserDropDown()
+        {
+            string connectionString = this.configuration.GetConnectionString("ConnectionString");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_USR_User_SelectForDropDown";
+
+                SqlDataReader reader = command.ExecuteReader();
+                DataTable dt = new DataTable();
+                dt.Load(reader);
+
+                List<SelectListItem> userList = new List<SelectListItem>();
+                foreach (DataRow data in dt.Rows)
+                {
+                    userList.Add(new SelectListItem
+                    {
+                        Value = data["UserID"].ToString(),
+                        Text = data["UserName"].ToString()
+                    });
+                }
+
+                ViewBag.UserList = userList;
+            }
+        }
+
+
+        #endregion
+
+        #region Doctor Drop Down
+        public void DoctorDropDown()
+        {
+            string connectionString = this.configuration.GetConnectionString("ConnectionString");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_DOC_Doctor_SelectForDropDown";
+
+                SqlDataReader reader = command.ExecuteReader();
+                DataTable dt = new DataTable();
+                dt.Load(reader);
+
+                List<SelectListItem> doctorList = new List<SelectListItem>();
+                foreach (DataRow data in dt.Rows)
+                {
+                    doctorList.Add(new SelectListItem
+                    {
+                        Value = data["DoctorID"].ToString(),
+                        Text = data["DoctorName"].ToString()
+                    });
+                }
+
+                ViewBag.DoctorList = doctorList;
+            }
+        }
+        #endregion
+
+        #region Patient Drop Down
+        public void PatientDropDown()
+        {
+            string connectionString = this.configuration.GetConnectionString("ConnectionString");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_PAT_Patient_SelectForDropDown";
+
+                SqlDataReader reader = command.ExecuteReader();
+                DataTable dt = new DataTable();
+                dt.Load(reader);
+
+                List<SelectListItem> patientList = new List<SelectListItem>();
+                foreach (DataRow data in dt.Rows)
+                {
+                    patientList.Add(new SelectListItem
+                    {
+                        Value = data["PatientID"].ToString(),
+                        Text = data["PatientName"].ToString()
+                    });
+                }
+
+                ViewBag.PatientList = patientList;
+            }
+        }
+        #endregion
+
     }
 }

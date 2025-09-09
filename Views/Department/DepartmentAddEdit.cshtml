@@ -53,16 +53,17 @@
                 <input type="hidden" asp-for="Created" />
                 <input type="hidden" asp-for="Modified" />
 
-                <div class="form-group">
-                    <label asp-for="UserID" class="control-label"></label>
-                    <select asp-for="UserID" class="form-control"
-                            asp-items="@(new SelectList(ViewBag.UserList, "UserID", "UserName"))">
+                <!-- User Dropdown -->
+                <div class="mb-3">
+                    <label asp-for="UserID" class="form-label fw-medium">User</label>
+                    <select asp-for="UserID"
+                            asp-items="ViewBag.UserList"
+                            class="form-control rounded-pill shadow-sm"
+                            required>
                         <option value="">-- Select User --</option>
                     </select>
-                    <span asp-validation-for="UserID" class="text-danger"></span>
+                    <div class="invalid-feedback">Please select a user.</div>
                 </div>
-
-
 
 
                 <!-- Buttons -->

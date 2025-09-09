@@ -1,5 +1,6 @@
 ﻿using HospitalManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -44,12 +45,14 @@ namespace HospitalManagementSystem.Controllers
         [HttpPost]
         public IActionResult DepartmentAddEdit(DepartmentModel departmentModel)
         {
-            // remove validation for properties not posted from the form
-            ModelState.Remove("Created");
-            ModelState.Remove("Modified");
-
+            
             if (!ModelState.IsValid)
             {
+                // Log validation errors
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
                 UserDropDown();
                 return View("DepartmentAddEdit", departmentModel);
             }
@@ -67,8 +70,7 @@ namespace HospitalManagementSystem.Controllers
                         if (departmentModel.DepartmentID == null)
                         {
                             command.CommandText = "PR_DEPT_Department_Insert";
-                            departmentModel.Created = DateTime.Now;
-                            command.Parameters.AddWithValue("@Created", departmentModel.Created);
+                            
                         }
                         else
                         {
@@ -95,7 +97,7 @@ namespace HospitalManagementSystem.Controllers
             {
                 TempData["ErrorMessage"] = "Error saving department: " + ex.Message;
                 UserDropDown();
-                return View("DepartmentAddEdit", departmentModel);
+                return View("DepartmentList", departmentModel);
             }
         }
 
@@ -182,27 +184,30 @@ namespace HospitalManagementSystem.Controllers
         public void UserDropDown()
         {
             string connectionString = this.configuration.GetConnectionString("ConnectionString");
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-
-            SqlCommand command = connection.CreateCommand();
-            command.CommandType = CommandType.StoredProcedure;
-            command.CommandText = "PR_USR_User_SelectForDropDown";
-
-            SqlDataReader reader = command.ExecuteReader();
-            DataTable dataTable = new DataTable();
-            dataTable.Load(reader);
-
-            List<UserDropDownModel> userList = new List<UserDropDownModel>();
-            foreach (DataRow data in dataTable.Rows)
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                UserDropDownModel model = new UserDropDownModel();
-                model.UserID = Convert.ToInt32(data["UserID"]);
-                model.UserName = data["UserName"].ToString();
-                userList.Add(model);
-            }
+                connection.Open();
 
-            ViewBag.UserList = userList;
+                SqlCommand command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_USR_User_SelectForDropDown";
+
+                SqlDataReader reader = command.ExecuteReader();
+                DataTable dt = new DataTable();
+                dt.Load(reader);
+
+                List<SelectListItem> userList = new List<SelectListItem>();
+                foreach (DataRow data in dt.Rows)
+                {
+                    userList.Add(new SelectListItem
+                    {
+                        Value = data["UserID"].ToString(),
+                        Text = data["UserName"].ToString()
+                    });
+                }
+
+                ViewBag.UserList = userList;
+            }
         }
 
         #endregion

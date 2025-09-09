@@ -16,18 +16,49 @@
                         <div class="d-flex">
                             <!-- Export to Excel -->
                             <a class="btn btn-outline-success d-flex align-items-center gap-2 shadow-sm px-3 me-2"
-                               asp-controller="User" asp-action="ExportToExcel">
+                               asp-controller="User" asp-action="ExportToExcel"
+                               data-bs-toggle="tooltip" data-bs-placement="top" title="Export to Excel">
                                 <i class="bi bi-file-earmark-excel-fill fs-5"></i>
-                                @* <span>Export to Excel</span> *@
                             </a>
 
                             <!-- Export to CSV -->
                             <a class="btn btn-outline-primary d-flex align-items-center gap-2 shadow-sm px-3"
-                               asp-controller="User" asp-action="ExportToCsv">
+                               asp-controller="User" asp-action="ExportToCsv"
+                               data-bs-toggle="tooltip" data-bs-placement="top" title="Download CSV">
                                 <i class="bi bi-filetype-csv fs-5"></i>
-                                @* <span>Export to CSV</span> *@
                             </a>
                         </div>
+
+                        <script>
+                            // Enable Bootstrap tooltips
+                            document.addEventListener("DOMContentLoaded", function () {
+                                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                                    return new bootstrap.Tooltip(tooltipTriggerEl, {
+                                        template: '<div class="tooltip custom-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+                                    });
+                                });
+                            });
+                        </script>
+
+                        <style>
+                            /* Slim, stylish tooltip */
+                            .custom-tooltip .tooltip-inner {
+                                background-color: #333; /* dark background */
+                                color: #fff; /* white text */
+                                font-size: 0.75rem; /* smaller text */
+                                padding: 0.25rem 0.5rem; /* tighter padding */
+                                border-radius: 0.25rem; /* slightly rounded corners */
+                                white-space: nowrap; /* keep text on one line */
+                            }
+
+                            .custom-tooltip .tooltip-arrow::before {
+                                border-top-color: #333; /* match tooltip background */
+                            }
+                        </style>
+
+
+
 
                         <!-- Right Side: Search -->
                         <form asp-controller="User" asp-action="UserList" method="get"

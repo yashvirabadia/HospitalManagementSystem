@@ -62,11 +62,18 @@
                 <!-- Hidden Fields -->
                 <input type="hidden" asp-for="Modified" />
 
+                <!-- User Dropdown -->
                 <div class="mb-3">
-                    <label asp-for="UserID" class="form-label fw-medium">User ID</label>
-                    <input asp-for="UserID" type="number" class="form-control rounded-pill shadow-sm" required />
-                    <div class="invalid-feedback">Please enter user ID.</div>
+                    <label asp-for="UserID" class="form-label fw-medium">User</label>
+                    <select asp-for="UserID"
+                            asp-items="ViewBag.UserList"
+                            class="form-control rounded-pill shadow-sm"
+                            required>
+                        <option value="">-- Select User --</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a user.</div>
                 </div>
+
 
                 <!-- Buttons -->
                 <div class="text-center mt-3">

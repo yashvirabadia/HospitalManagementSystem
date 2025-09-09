@@ -1,5 +1,6 @@
 ﻿using HospitalManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -35,6 +36,7 @@ namespace HospitalManagementSystem.Controllers
         [HttpGet]
         public IActionResult DoctorAddEdit()
         {
+            UserDropDown();
             return View();
         }
 
@@ -47,7 +49,7 @@ namespace HospitalManagementSystem.Controllers
                 {
                     Console.WriteLine(error.ErrorMessage);
                 }
-
+                UserDropDown();
                 return View("DoctorAddEdit", doctorModel);
             }
 
@@ -94,6 +96,7 @@ namespace HospitalManagementSystem.Controllers
                 catch (Exception ex)
                 {
                     TempData["ErrorMessage"] = "An error occurred while saving doctor: " + ex.Message;
+                    UserDropDown();
                     return RedirectToAction("DoctorList");
 
                 }
@@ -154,7 +157,7 @@ namespace HospitalManagementSystem.Controllers
                     return RedirectToAction("DoctorList");
                 }
             }
-
+            UserDropDown();
             return View("DoctorAddEdit", new DoctorModel
             {
                 Name = "",
@@ -187,6 +190,39 @@ namespace HospitalManagementSystem.Controllers
             }
             return RedirectToAction("DoctorList");
         }
+        #endregion
+
+        #region User Drop Down
+        public void UserDropDown()
+        {
+            string connectionString = this.configuration.GetConnectionString("ConnectionString");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_USR_User_SelectForDropDown";
+
+                SqlDataReader reader = command.ExecuteReader();
+                DataTable dt = new DataTable();
+                dt.Load(reader);
+
+                List<SelectListItem> userList = new List<SelectListItem>();
+                foreach (DataRow data in dt.Rows)
+                {
+                    userList.Add(new SelectListItem
+                    {
+                        Value = data["UserID"].ToString(),
+                        Text = data["UserName"].ToString()
+                    });
+                }
+
+                ViewBag.UserList = userList;
+            }
+        }
+
+
         #endregion
     }
 }

@@ -5,7 +5,7 @@ namespace HospitalManagementSystem.Models
 {
     public class PatientModel
     {
-        [Key]
+  
         public int? PatientID { get; set; }
 
         [Required(ErrorMessage = "Patient name is required.")]
@@ -53,15 +53,15 @@ namespace HospitalManagementSystem.Models
         [Display(Name = "Is Active")]
         public bool IsActive { get; set; } = true;
 
-        [Required]
+        
         [DataType(DataType.DateTime)]
         [Display(Name = "Created Date")]
-        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime? Created { get; set; } = DateTime.Now;
 
-        [Required]
+        
         [DataType(DataType.DateTime)]
         [Display(Name = "Modified Date")]
-        public DateTime Modified { get; set; } = DateTime.Now;
+        public DateTime? Modified { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "User is required.")]
         [Display(Name = "User ID")]

@@ -11,29 +11,42 @@
 
                 <input type="hidden" asp-for="DoctorDepartmentID" />
 
-                <!-- Doctor ID -->
+                <!-- Doctor Dropdown -->
                 <div class="mb-3">
-                    <label asp-for="DoctorID" class="form-label fw-medium">Doctor ID</label>
-                    <input asp-for="DoctorID" type="number" class="form-control rounded-pill shadow-sm" placeholder="Enter Doctor ID" required />
-                    <div class="invalid-feedback">Please enter a valid Doctor ID.</div>
-                    @* <span asp-validation-for="DoctorID" class="text-danger small"></span> *@
+                    <label asp-for="DoctorID" class="form-label fw-medium">Doctor</label>
+                    <select asp-for="DoctorID"
+                            asp-items="ViewBag.DoctorList"
+                            class="form-control rounded-pill shadow-sm"
+                            required>
+                        <option value="">-- Select Doctor --</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a doctor.</div>
                 </div>
 
-                <!-- Department ID -->
+                <!-- Department Dropdown -->
                 <div class="mb-3">
-                    <label asp-for="DepartmentID" class="form-label fw-medium">Department ID</label>
-                    <input asp-for="DepartmentID" type="number" class="form-control rounded-pill shadow-sm" placeholder="Enter Department ID" required />
-                    <div class="invalid-feedback">Please enter a valid Department ID.</div>
-                    @* <span asp-validation-for="DepartmentID" class="text-danger small"></span> *@
+                    <label asp-for="DepartmentID" class="form-label fw-medium">Department</label>
+                    <select asp-for="DepartmentID"
+                            asp-items="ViewBag.DepartmentList"
+                            class="form-control rounded-pill shadow-sm"
+                            required>
+                        <option value="">-- Select Department --</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a department.</div>
                 </div>
 
-                <!-- User ID -->
+                <!-- User Dropdown -->
                 <div class="mb-3">
-                    <label asp-for="UserID" class="form-label fw-medium">User ID</label>
-                    <input asp-for="UserID" type="number" class="form-control rounded-pill shadow-sm" placeholder="Enter User ID" required />
-                    <div class="invalid-feedback">Please enter a valid User ID.</div>
-                    @* <span asp-validation-for="UserID" class="text-danger small"></span> *@
+                    <label asp-for="UserID" class="form-label fw-medium">User</label>
+                    <select asp-for="UserID"
+                            asp-items="ViewBag.UserList"
+                            class="form-control rounded-pill shadow-sm"
+                            required>
+                        <option value="">-- Select User --</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a user.</div>
                 </div>
+
 
                 <!-- Buttons -->
                 <div class="text-center mt-4">

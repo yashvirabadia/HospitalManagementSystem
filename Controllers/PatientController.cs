@@ -1,5 +1,6 @@
 ﻿using HospitalManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -40,7 +41,7 @@ namespace HospitalManagementSystem.Controllers
                 {
                     Console.WriteLine(error.ErrorMessage);
                 }
-
+                UserDropDown();
                 return View("PatientAddEdit", patientModel);
             }
 
@@ -87,6 +88,7 @@ namespace HospitalManagementSystem.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "Error saving patient: " + ex.Message;
+                UserDropDown();
                 return View("PatientAddEdit", patientModel);
             }
         }
@@ -149,7 +151,7 @@ namespace HospitalManagementSystem.Controllers
                     return RedirectToAction("PatientList");
                 }
             }
-
+            UserDropDown();
             return View("PatientAddEdit", model);
         }
         #endregion
@@ -176,6 +178,39 @@ namespace HospitalManagementSystem.Controllers
             }
             return RedirectToAction("PatientList");
         }
+        #endregion
+
+        #region User Drop Down
+        public void UserDropDown()
+        {
+            string connectionString = this.configuration.GetConnectionString("ConnectionString");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_USR_User_SelectForDropDown";
+
+                SqlDataReader reader = command.ExecuteReader();
+                DataTable dt = new DataTable();
+                dt.Load(reader);
+
+                List<SelectListItem> userList = new List<SelectListItem>();
+                foreach (DataRow data in dt.Rows)
+                {
+                    userList.Add(new SelectListItem
+                    {
+                        Value = data["UserID"].ToString(),
+                        Text = data["UserName"].ToString()
+                    });
+                }
+
+                ViewBag.UserList = userList;
+            }
+        }
+
+
         #endregion
     }
 }

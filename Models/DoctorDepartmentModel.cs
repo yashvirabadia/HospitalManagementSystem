@@ -19,7 +19,7 @@ namespace HospitalManagementSystem.Models
         [Required]
         [DataType(DataType.DateTime)]
         [Display(Name = "Created Date")]
-        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime? Created { get; set; } = DateTime.Now;
 
         [DataType(DataType.DateTime)]
         [Display(Name = "Modified Date")]

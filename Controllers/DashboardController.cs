@@ -29,7 +29,7 @@ namespace HospitalManagementSystem.Controllers
                 model.PatientCount = ExecuteCount(connection, "SELECT COUNT(*) FROM Patient");
                 model.DepartmentCount = ExecuteCount(connection, "SELECT COUNT(*) FROM Department");
                 model.AppointmentCount = ExecuteCount(connection, "SELECT COUNT(*) FROM Appointment");
-                model.EmployeeCount = ExecuteCount(connection, "SELECT COUNT(*) FROM DoctorDepartment");
+                model.DocDepCount = ExecuteCount(connection, "SELECT COUNT(*) FROM DoctorDepartment");
 
                 // Revenue (using Appointment table + TotalConsultedAmount column)
                 using (SqlCommand cmd = new SqlCommand(

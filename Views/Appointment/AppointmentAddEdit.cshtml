@@ -16,30 +16,40 @@
 
                 <input type="hidden" asp-for="AppointmentID" />
 
-                <!-- Doctor -->
-                <div class="col-12">
+                <!-- Doctor Dropdown -->
+                <div class="mb-3">
                     <label asp-for="DoctorID" class="form-label fw-medium">Doctor</label>
-                    <input asp-for="DoctorID"
-                           type="number"
-                           class="form-control rounded-pill shadow-sm"
-                           placeholder="Enter Doctor ID"
-                           required />
-                    <div class="invalid-feedback">
-                        Please enter a valid Doctor ID.
-                    </div>
+                    <select asp-for="DoctorID"
+                            asp-items="ViewBag.DoctorList"
+                            class="form-control rounded-pill shadow-sm"
+                            required>
+                        <option value="">-- Select Doctor --</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a doctor.</div>
                 </div>
 
-                <!-- Patient -->
-                <div class="col-12">
+                <!-- Patient Dropdown -->
+                <div class="mb-3">
                     <label asp-for="PatientID" class="form-label fw-medium">Patient</label>
-                    <input asp-for="PatientID"
-                           type="number"
-                           class="form-control rounded-pill shadow-sm"
-                           placeholder="Enter Patient ID"
-                           required />
-                    <div class="invalid-feedback">
-                        Please enter a valid Patient ID.
-                    </div>
+                    <select asp-for="PatientID"
+                            asp-items="ViewBag.PatientList"
+                            class="form-control rounded-pill shadow-sm"
+                            required>
+                        <option value="">-- Select Patient --</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a patient.</div>
+                </div>
+
+                <!-- User Dropdown -->
+                <div class="mb-3">
+                    <label asp-for="UserID" class="form-label fw-medium">User</label>
+                    <select asp-for="UserID"
+                            asp-items="ViewBag.UserList"
+                            class="form-control rounded-pill shadow-sm"
+                            required>
+                        <option value="">-- Select User --</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a user.</div>
                 </div>
 
                 <!-- Appointment Date -->
@@ -108,18 +118,6 @@
                            required />
                     <div class="invalid-feedback">
                         Please enter a valid amount.
-                    </div>
-                </div>
-
-                <!-- User ID -->
-                <div class="col-12">
-                    <label asp-for="UserID" class="form-label fw-medium">User ID</label>
-                    <input asp-for="UserID"
-                           type="number"
-                           class="form-control rounded-pill shadow-sm"
-                           required />
-                    <div class="invalid-feedback">
-                        Please enter a valid User ID.
                     </div>
                 </div>
 

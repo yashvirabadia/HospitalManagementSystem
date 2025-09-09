@@ -7,7 +7,7 @@
         public int PatientCount { get; set; }
         public int DepartmentCount { get; set; }
         public int AppointmentCount { get; set; }
-        public int EmployeeCount { get; set; }
+        public int DocDepCount { get; set; }
 
         // For charts
         public List<string> RevenueLabels { get; set; } = new();
